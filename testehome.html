@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <link rel="stylesheet" href="trackcash.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trackcash</title>
+</head>
+
+<body>
+    <header>
+        <div class="interface">
+            <div class="logo" Id="Home">
+                <a href="#">
+                    <h1>Trackcash</h1>
+                </a>
+            </div>
+
+            <nav class="menu-desktop">
+                <ul class="menus">
+                    <li><a href="#">Câmbio</a></li>
+                    <li><a href="#">Gráficos</a></li>
+                    <li><a href="#Noticias">Notícias</a></li>
+                </ul>
+            </nav>
+            <div class="conta">
+                <a href="login.html">
+                    <button>Entrar</button>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="grafico-cambio">
+        <canvas id="myChart"></canvas>
+    </div>
+    
+    <div class="cambio">
+        <table>
+            <tr>
+                <th>Moeda</th>
+                <th>Taxa de Câmbio</th>
+            </tr>
+            <tr id="exchange-rate-row">
+                <td>
+                    <label for="escolha">Escolha uma moeda:</label>
+                    
+                    <select id="escolha" name="escolha" onchange="updateExchangeRate()">
+                        <option value="USD">Dólar Americano (USD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                        <option value="GBP">Libra Esterlina (GBP)</option>
+                        <option value="JPY">Iene japônes</option>
+                        <option value="CAD">Dolar Canadense</option>
+                    </select>
+                
+                </td>
+                <td id="exchange-rate"></td>
+            </tr>
+        </table>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let chartblock = null;
+
+    async function fetchExchangeRate(base) {
+        const apiUrl = `https://economia.awesomeapi.com.br/last/BRL-${base}`;
+        try {
+            const response = await fetch(`${apiUrl}`);
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Erro ao buscar taxa de câmbio:', error);
+        }
+    }
+
+    async function updateExchangeRate() {
+        const selectedCurrency = document.getElementById('escolha').value;
+        const rates = await fetchExchangeRate(selectedCurrency);
+        document.getElementById('exchange-rate').innerText = `Taxa de câmbio para ${selectedCurrency}: ${rates[`BRL${selectedCurrency}`].ask}`;
+        var query_vars = {
+            apikey: 'fca_live_k7qgm7xjiMokaysiPd3oWbEzdbt8CpcsWwfrvhDH',
+            date: "2024-03-04",
+            currencies: selectedCurrency,
+        }
+
+        const response = await fetch(`https://economia.awesomeapi.com.br/json/daily/BRL-${selectedCurrency}/30`);
+        const data = await response.json();
+        chart(data,selectedCurrency)
+    }
+    function chart(data,selectedCurrency) {
+        let labels = [];
+        let dados = [];
+        for (let i = 0; i < data.length; i++) {
+            console.log(data[i])
+            dados.push(data[i].ask)
+            let dt = new Date(parseInt(data[i].timestamp) * 1000);
+            labels.push(`${dt.getMonth()}/${dt.getDate()}`)
+        }
+        if(chartblock){
+            chartblock.destroy();
+            chartblock = null;
+        }
+        chartblock = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [
+            {
+                label: `BRL-${selectedCurrency}`,
+                data: dados,
+                borderColor: '#05d405', // Cor da linha (pode ser especificada em diferentes formatos)
+                tension: 0.4
+            }
+        ]
+    },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Chart.js Line Chart'
+                    }
+                }
+            },
+        });
+    }
+
+    window.onload = updateExchangeRate;
+    const ctx = document.getElementById('myChart');
+
+
+</script>
+
+<div class="caixanoticias">
+<div class="container">
+    <!-- Inicio da parte do Card -->
+    
+    <div class="card-title" id="Noticias">
+        <h2>Noticias</h2>
+    </div>
+    <div class="card" id="card1">
+        <div class="data"> Blog <time>09 de Mar, 2024</time></div>
+        <h2>Dolar sobe em disparada</h2>
+        <div class="autor">
+            <div class="img-container">
+                <div class="img"></div>
+            </div>
+            <div class="info">
+                <span>Autor</span>
+                Matheus Lacerda Macedo
+            </div>
+        </div>
+        <div class="tags">
+            <a href="#" id="botaoMercado1">Mercado</a>
+            <a href="#" id="botaoNegocios1">Negocios</a>
+            <a href="#" id="botaoDolar1">Dolar</a>
+            <a href="#" id="linkFinancas1" target="_blank">Finanças</a>
+        </div>
+    </div>
+
+    
+    <script>
+        document.getElementById('botaoMercado1').addEventListener('click', function() {
+            window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
+        });
+
+        document.getElementById('botaoNegocios1').addEventListener('click', function() {
+            window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
+        });
+
+        document.getElementById('botaoDolar1').addEventListener('click', function() {
+            window.location.href = "https://g1.globo.com/economia/dolar/";
+        });
+
+        document.getElementById('linkFinancas1').href = "https://valor.globo.com/financas/";
+    </script>
+    <div class="card" id="card2">
+        <div class="data"> Blog <time>09 de Mar, 2024</time></div>
+        <h2>Dolar sobe em disparada</h2>
+        <div class="autor">
+            <div class="img-container">
+                <div class="img"></div>
+            </div>
+            <div class="info">
+                <span>Autor</span>
+                Matheus Lacerda Macedo
+            </div>
+        </div>
+        <div class="tags">
+            <a href="#" id="botaoMercado2">Mercado</a>
+            <a href="#" id="botaoNegocios2">Negocios</a>
+            <a href="#" id="botaoDolar2">Dolar</a>
+            <a href="#" id="linkFinancas2" target="_blank">Finanças</a>
+        </div>
+    </div>
+
+  
+    <script>
+        document.getElementById('botaoMercado2').addEventListener('click', function() {
+            window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
+        });
+
+        document.getElementById('botaoNegocios2').addEventListener('click', function() {
+            window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
+        });
+
+        document.getElementById('botaoDolar2').addEventListener('click', function() {
+            window.location.href = "https://g1.globo.com/economia/dolar/";
+        });
+
+        document.getElementById('linkFinancas2').href = "https://valor.globo.com/financas/";
+    </script>
+
+<div class="card" id="card3">
+    <div class="data"> Blog <time>09 de Mar, 2024</time></div>
+    <h2>Dolar sobe em disparada</h2>
+    <div class="autor">
+        <div class="img-container">
+            <div class="img"></div>
+        </div>
+        <div class="info">
+            <span>Autor</span>
+            Matheus Lacerda Macedo
+        </div>
+    </div>
+    <div class="tags">
+        <a href="#" id="botaoMercado3">Mercado</a>
+        <a href="#" id="botaoNegocios3">Negocios</a>
+        <a href="#" id="botaoDolar3">Dolar</a>
+        <a href="#" id="linkFinancas3" target="_blank">Finanças</a>
+    </div>
+</div>
+
+
+<script>
+    document.getElementById('botaoMercado3').addEventListener('click', function() {
+        window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
+    });
+
+    document.getElementById('botaoNegocios3').addEventListener('click', function() {
+        window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
+    });
+
+    document.getElementById('botaoDolar3').addEventListener('click', function() {
+        window.location.href = "https://g1.globo.com/economia/dolar/";
+    });
+
+    document.getElementById('linkFinancas3').href = "https://valor.globo.com/financas/";
+</script>
+
+<div class="card" id="card4">
+    <div class="data"> Blog <time>09 de Mar, 2024</time></div>
+    <h2>Dolar sobe em disparada</h2>
+    <div class="autor">
+        <div class="img-container">
+            <div class="img"></div>
+        </div>
+        <div class="info">
+            <span>Autor</span>
+            Matheus Lacerda Macedo
+        </div>
+    </div>
+    <div class="tags">
+        <a href="#" id="botaoMercado4">Mercado</a>
+        <a href="#" id="botaoNegocios4">Negocios</a>
+        <a href="#" id="botaoDolar4">Dolar</a>
+        <a href="#" id="linkFinancas4" target="_blank">Finanças</a>
+    </div>
+</div>
+
+
+<script>
+    document.getElementById('botaoMercado4').addEventListener('click', function() {
+        window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
+    });
+
+    document.getElementById('botaoNegocios4').addEventListener('click', function() {
+        window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
+    });
+
+    document.getElementById('botaoDolar4').addEventListener('click', function() {
+        window.location.href = "https://g1.globo.com/economia/dolar/";
+    });
+
+    document.getElementById('linkFinancas4').href = "https://valor.globo.com/financas/";
+</script>
+
+<div class="card" id="card5">
+    <div class="data"> Blog <time>09 de Mar, 2024</time></div>
+    <h2>Dolar sobe em disparada</h2>
+    <div class="autor">
+        <div class="img-container">
+            <div class="img"></div>
+        </div>
+        <div class="info">
+            <span>Autor</span>
+            Matheus Lacerda Macedo
+        </div>
+    </div>
+    <div class="tags">
+        <a href="#" id="botaoMercado5">Mercado</a>
+        <a href="#" id="botaoNegocios5">Negocios</a>
+        <a href="#" id="botaoDolar5">Dolar</a>
+        <a href="#" id="linkFinancas5" target="_blank">Finanças</a>
+    </div>
+</div>
+
+
+<script>
+    document.getElementById('botaoMercado5').addEventListener('click', function() {
+        window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
+    });
+
+    document.getElementById('botaoNegocios5').addEventListener('click', function() {
+        window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
+    });
+
+    document.getElementById('botaoDolar5').addEventListener('click', function() {
+        window.location.href = "https://g1.globo.com/economia/dolar/";
+    });
+
+    document.getElementById('linkFinancas5').href = "https://valor.globo.com/financas/";
+</script>
+
+<div class="card" id="card6">
+    <div class="data"> Blog <time>09 de Mar, 2024</time></div>
+    <h2>Dolar sobe em disparada</h2>
+    <div class="autor">
+        <div class="img-container">
+            <div class="img"></div>
+        </div>
+        <div class="info">
+            <span>Autor</span>
+            Matheus Lacerda Macedo
+        </div>
+    </div>
+    <div class="tags">
+        <a href="#" id="botaoMercado6">Mercado</a>
+        <a href="#" id="botaoNegocios6">Negocios</a>
+        <a href="#" id="botaoDolar6">Dolar</a>
+        <a href="#" id="linkFinancas6" target="_blank">Finanças</a>
+    </div>
+</div>
+
+
+<script>
+    document.getElementById('botaoMercado6').addEventListener('click', function() {
+        window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
+    });
+
+    document.getElementById('botaoNegocios6').addEventListener('click', function() {
+        window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
+    });
+
+    document.getElementById('botaoDolar6').addEventListener('click', function() {
+        window.location.href = "https://g1.globo.com/economia/dolar/";
+    });
+
+    document.getElementById('linkFinancas6').href = "https://valor.globo.com/financas/";
+</script>
+    <!-- Fim da parte dos cards -->
+</div>
+</div>
+</html>
