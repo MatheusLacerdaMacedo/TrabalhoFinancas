@@ -1,65 +1,212 @@
+:root{
+    --primary:#100e17;
+    --secondary:#17141d;
+    --tertiary:#7a7a8c;
+    --quartenary:#05d405;
+    --quintary:#28242f;
+}
 *{
-    background-color: #172031;
-}
-.title {
-    
-    color: rgb(18, 141, 6);
-    margin-left: 50px;
-}
-
-body{
-    margin: 0px;
-
-}
-
-.conteiner1 {
-    background-color:rgba(0,0,0,.5);
-    border-bottom: 2px solid rgb(18, 141, 6);
-}
-
-.menu {
-    list-style-type: none;
-    margin: 0 auto;
+    margin: 0;
     padding: 0;
-    overflow: hidden;
-    background-color: white;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+body,
+html {
+    width: 100%;
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+body{
+    background-color: black;
+    height: 100ch;
+    color:#05d405;
+}
+
+.interface{
+    max-width: 1480px;
+    margin: 0 auto;
     position: fixed;
-    top: 0;
-    right: 0;
-    margin-right: 100px;
-    margin-top: 8px;
+    width: 100%;
 }
 
-li {
-    float: left;
+.menu-desktop{
+    position: fixed;
+    width: 100%;
+    left: 50%;
 }
 
-a {
-    display: block;
-    text-align: center;
-    padding: 14px 16px;
+
+
+header{
+    padding: 40px 4%;
+}
+
+header > .interface {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header a{
+    color: #05d405;
     text-decoration: none;
-    color: rgb(18, 141, 6);
+    display: inline-block;
+    transition: .2s;
 }
 
+header .menus a{
+    color: #006400;
+    text-decoration: none;
+}
 
-.register{
-    background-color:  rgb(233, 233, 233);
+header a:hover{
+    color: #05d405;
+    transform: scale(1.05);
+}
+
+header nav ul{
+    list-style-type: none;
+}
+
+header nav ul li{
+    display: inline-block;
+    padding: 0 40px;
+}
+
+header .conta button{
+    padding: 10px 40px;
+    font-size: 14px;
+    font-weight: 600;
+    background-color: #05d405;
+    border: 0;
     border-radius: 7px;
+    cursor: pointer;
 }
 
-.register a:hover{
-    background-color:  rgb(224, 224, 224);
-    border-radius: 7px;
+header .conta button:hover{
+    box-shadow: 0px 0px 8px #05d40583;
 }
 
-li a:hover {
-    color: black;
+.cambio{
+    background-color: white;
 }
 
-.conteiner2 {
-    margin-top: 5px;
-    height: 300px;
-    background-color: rgba(0,0,0,.5);
+.grafico-cambio {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px; /* Ajuste conforme necessário para a altura desejada */
+}
+.container{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    padding: 60px;
+    overflow: hidden;
+
+}
+
+.card-title {
+    color: #fff;
+    width: 300px;
+    height: 400px;
+    flex-shrink: 0;
+    border-radius: 20px;
+    box-shadow: 0 0 99px 0 rgba(0, 0, 0, 1);
+    margin-right: 0px;
+    background-color: var(--quartenary);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     
+}
+.card{
+    left:300px;
+    width:300px;
+    height:400px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    justify-content: space-between;
+    background-color: var(--secondary);
+    padding:30px;
+    font-size: 10px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 99px 0 rgba(0, 0, 0, 1);
+    margin-left: -150px;
+    transition: 0.2s;
+}
+.card:hover{
+    margin-right: 150px;
+    transform: translateY(-20px);
+}
+.card .data{
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.card .data time {
+    color: var(--tertiary);
+    padding-left: 10px;
+}   
+.card h2{
+    font-size: 16px;
+    line-height: 18px;
+    display: block;
+    height: 110px;
+}
+.card .autor{
+    display: flex;
+    align-items: center;
+}
+.card .autor .img-container{
+    width: 50px;
+    height: 50px;
+    border: solid 3px var(--quartenary);
+    border-radius: 50%;
+    padding: 2px;
+    margin-right: 10px;
+}
+.card .autor .img-container .img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: url(./autoria.png) no-repeat center center;
+    background-size: cover;
+}
+
+.card .autor .info{
+    font-size: 12px;
+    font-weight: bold;
+}
+.card .autor .info span {
+    display:block;
+    font-size: 10px;
+    color: var(--tertiary);
+    padding-bottom: 3px;
+}
+
+.card .tags a{
+    display: inline-block;
+    border: solid 3px var(--quintary);
+    border-radius: 30px;
+    padding: 8px 25px;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--tertiary);
+    font-weight: bold;
+}
+
+.card .tags a:hover {
+    color: var(--quartenary);
+    border-color: #05d405;
+}
+html{
+    scroll-behavior: smooth;
 }
