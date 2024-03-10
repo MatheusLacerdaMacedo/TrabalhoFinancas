@@ -23,12 +23,17 @@ body{
     color:#05d405;
 }
 
-.interface{
+.interface {
     max-width: 1480px;
     margin: 0 auto;
     position: fixed;
     width: 100%;
+    word-spacing: 10px; 
+    background-color: #100e17;
+    padding: 10px;
+    border-radius: 15px;
 }
+
 
 .menu-desktop{
     position: fixed;
@@ -88,15 +93,24 @@ header .conta button:hover{
     box-shadow: 0px 0px 8px #05d40583;
 }
 
-.cambio{
-    background-color: white;
+.cambio {
+    margin: 0 auto; 
+    width: 35%; 
+    background-color: #100e17;
+    border-radius: 15px;
+    padding-left: 15px;
+    padding: 5px;
 }
 
+
 .grafico-cambio {
+    margin-top: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 400px; /* Ajuste conforme necessário para a altura desejada */
+    height: 400px; 
+    border-color: #05d405;
+    padding-top: 30px;
 }
 .container{
     display: flex;
@@ -210,3 +224,20 @@ header .conta button:hover{
 html{
     scroll-behavior: smooth;
 }
+
+ #escolha {
+        padding: 3px;
+        font-size: 14px; 
+        border: 0px solid #000000;  
+        border-radius: 4px;  
+        background-color: #000000;
+        color: #05d405;
+      
+    }
+.caixanoticias{
+    margin-top: 200px;
+    background-color:#21222270;
+    border-radius: 20px;
+    margin: 20px;
+}
+    
