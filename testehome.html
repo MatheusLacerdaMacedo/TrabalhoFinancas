@@ -31,6 +31,11 @@
             </div>
         </div>
     </header>
+
+    <div class="grafico-cambio">
+        <canvas id="myChart"></canvas>
+    </div>
+    
     <div class="cambio">
         <table>
             <tr>
@@ -40,21 +45,20 @@
             <tr id="exchange-rate-row">
                 <td>
                     <label for="escolha">Escolha uma moeda:</label>
+                    
                     <select id="escolha" name="escolha" onchange="updateExchangeRate()">
                         <option value="USD">Dólar Americano (USD)</option>
                         <option value="EUR">Euro (EUR)</option>
                         <option value="GBP">Libra Esterlina (GBP)</option>
                         <option value="JPY">Iene japônes</option>
+                        <option value="CAD">Dolar Canadense</option>
                     </select>
+                
                 </td>
                 <td id="exchange-rate"></td>
             </tr>
         </table>
     </div>
-    <div class="grafico-cambio">
-        <canvas id="myChart"></canvas>
-    </div>
-    
 </body>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -99,17 +103,18 @@
             chartblock = null;
         }
         chartblock = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: `BRL-${selectedCurrency}`,
-                        data: dados,
-                        tension: 0.4
-                    }
-                ]
-            },
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [
+            {
+                label: `BRL-${selectedCurrency}`,
+                data: dados,
+                borderColor: '#05d405', // Cor da linha (pode ser especificada em diferentes formatos)
+                tension: 0.4
+            }
+        ]
+    },
             options: {
                 responsive: true,
                 plugins: {
@@ -131,6 +136,7 @@
 
 </script>
 
+<div class="caixanoticias">
 <div class="container">
     <!-- Inicio da parte do Card -->
     
@@ -359,5 +365,5 @@
 </script>
     <!-- Fim da parte dos cards -->
 </div>
-
+</div>
 </html>
