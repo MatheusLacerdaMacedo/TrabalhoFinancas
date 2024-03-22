@@ -11,7 +11,7 @@
     box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
 }
-body,
+
 html {
     width: 100%;
     height: 100%;
@@ -24,7 +24,7 @@ body{
 }
 
 .interface {
-    max-width: 1480px;
+    max-width: 1600px;
     margin: 0 auto;
     position: fixed;
     width: 100%;
@@ -102,6 +102,21 @@ header .conta button:hover{
     padding: 5px;
 }
 
+.title-moeda {
+    padding-right: 107px;
+}
+
+#moeda {
+    margin-left: 100px;
+    margin-top: 10px;
+    text-align: center;
+    width: 70px;
+    height: 30px;
+    background-color: #000000;
+    border-color: #05d405;
+    color: white;
+    border-radius: 7px;
+}
 
 .grafico-cambio {
     margin-top: 30px;
@@ -112,6 +127,8 @@ header .conta button:hover{
     border-color: #05d405;
     padding-top: 30px;
 }
+
+
 .container{
     display: flex;
     width: 100%;
@@ -172,7 +189,7 @@ header .conta button:hover{
     font-size: 16px;
     line-height: 18px;
     display: block;
-    height: 110px;
+    
 }
 .card .autor{
     display: flex;
@@ -240,4 +257,34 @@ html{
     border-radius: 20px;
     margin: 20px;
 }
-    
+.card .texto{
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+}
+#btnSalvar {
+    background-color: #000000; /* Cor de fundo verde */
+    border: none; /* Remove a borda */
+    color: #05d405; /* Cor do texto branco */
+    padding: 10px 20px; /* Adiciona espaço interno ao botão */
+    text-align: center; /* Centraliza o texto horizontalmente */
+    text-decoration: none; /* Remove sublinhado do texto */
+    display: inline-block; /* Permite que o botão se ajuste ao conteúdo */
+    font-size: 16px; /* Tamanho da fonte */
+    margin: 4px 2px; /* Margem externa */
+    cursor: pointer; /* Mostra o cursor de ponteiro quando passa sobre o botão */
+    border-radius: 4px; /* Borda arredondada */
+}
+
+#btnSalvar:hover {
+    color: #05d405;
+    transform: scale(1.05)
+}
+#numero{
+    padding: 3px;
+        font-size: 14px; 
+        border: 0px solid #000000;  
+        border-radius: 4px;  
+        background-color: #000000;
+        color: #05d405;
+}
