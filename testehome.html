@@ -75,27 +75,31 @@
     }
 
     async function updateExchangeRate() {
-        const selectedCurrency = document.getElementById('escolha').value;
-        const rates = await fetchExchangeRate(selectedCurrency);
-        document.getElementById('exchange-rate').innerText = `Taxa de câmbio para BRL: ${rates[`${selectedCurrency}BRL` ].ask}`;
-        var query_vars = {
-            apikey: 'fca_live_k7qgm7xjiMokaysiPd3oWbEzdbt8CpcsWwfrvhDH',
-            date: "2024-03-15",
-            currencies: selectedCurrency,
-        }
-
-        const response = await fetch(`https://economia.awesomeapi.com.br/json/daily/${selectedCurrency}-BRL/30`);
-        const data = await response.json();
-        chart(data, selectedCurrency)
+    const selectedCurrency = document.getElementById('escolha').value;
+    const rates = await fetchExchangeRate(selectedCurrency);
+    // Ajuste para exibir a taxa de câmbio com duas casas decimais
+    const exchangeRate = parseFloat(rates[`${selectedCurrency}BRL`].ask).toFixed(2);
+    document.getElementById('exchange-rate').innerText = `Taxa de câmbio para BRL: ${exchangeRate}`;
+    var query_vars = {
+        apikey: 'fca_live_k7qgm7xjiMokaysiPd3oWbEzdbt8CpcsWwfrvhDH',
+        date: "2024-03-15",
+        currencies: selectedCurrency,
     }
+
+    const response = await fetch(`https://economia.awesomeapi.com.br/json/daily/${selectedCurrency}-BRL/30`);
+    const data = await response.json();
+    chart(data, selectedCurrency)
+}
+
     function chart(data, selectedCurrency) {
         let labels = [];
         let dados = [];
         for (let i = 0; i < data.length; i++) {
-            console.log(data[i])
+            console.log(data[i])    
             dados.push(data[i].ask)
             let dt = new Date(parseInt(data[i].timestamp) * 1000);
             labels.push(`${dt.getMonth()}/${dt.getDate()}`)
+            
         }
         if (chartblock) {
             chartblock.destroy();
@@ -122,12 +126,13 @@
                     },
                     title: {
                         display: true,
-                        text: ''
+                        text: 'Grafico de Câmbio'
                     }
                 }
             },
         });
     }
+    
 
     window.onload = updateExchangeRate;
     const ctx = document.getElementById('myChart');
