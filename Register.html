@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="register.css">
+    <title>Register</title>
+    <style>
+        h2 a {
+            color: #05d405 !important; 
+            text-decoration: none !important; 
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #05d405;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #048c04;
+        }
+    </style>
+</head>
+<body>
+    <form class="register" id="registerForm">
+        <h2><a href="testehome.html">Trackcash</a></h2>
+        <h3>Registrar</h3>
+        <div class="box-user">
+            <input type="email" name="email" required>
+            <label>Email</label>
+        </div>
+        <div class="box-user">
+            <input type="text" name="username" required>
+            <label>Usuário</label>
+        </div>
+        <div class="box-user">
+            <input type="password" name="password" required>
+            <label>Senha</label>
+        </div>
+        <div>
+            <a href="login.html" class="Already">Já tem uma conta?</a>
+        </div>
+        <button type="submit" class="btn">Registrar</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var registerForm = document.getElementById('registerForm');
+
+            registerForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                var formData = new FormData(registerForm);
+                var email = formData.get('email');
+                var username = formData.get('username');
+                var password = formData.get('password');
+
+                
+                var registeredUsers = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+
+                
+                registeredUsers.push({ email: email, username: username, password: password });
+
+                
+                localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+
+                alert('Registro bem-sucedido!');
+
+                
+                window.location.href = 'testelogin2.html';
+            });
+        });
+    </script>
+</body>
+</html>
