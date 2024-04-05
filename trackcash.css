@@ -1,11 +1,12 @@
-:root{
-    --primary:#100e17;
-    --secondary:#17141d;
-    --tertiary:#7a7a8c;
-    --quartenary:#05d405;
-    --quintary:#28242f;
+:root {
+    --primary: #100e17;
+    --secondary: #17141d;
+    --tertiary: #7a7a8c;
+    --quartenary: #05d405;
+    --quintary: #28242f;
 }
-*{
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -17,10 +18,11 @@ html {
     height: 100%;
     font-family: Arial, Helvetica, sans-serif;
 }
-body{
+
+body {
     background-color: black;
     height: 100ch;
-    color:#05d405;
+    color: #05d405;
 }
 
 .interface {
@@ -28,14 +30,12 @@ body{
     margin: 0 auto;
     position: fixed;
     width: 100%;
-    word-spacing: 10px; 
+    word-spacing: 10px;
     background-color: #100e17;
     padding: 10px;
     border-radius: 15px;
 }
-
-
-.menu-desktop{
+.menu-desktop {
     position: fixed;
     width: 100%;
     left: 50%;
@@ -43,43 +43,43 @@ body{
 
 
 
-header{
+header {
     padding: 40px 4%;
 }
 
-header > .interface {
+header>.interface {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-header a{
+header a {
     color: #05d405;
     text-decoration: none;
     display: inline-block;
     transition: .2s;
 }
 
-header .menus a{
+header .menus a {
     color: #006400;
     text-decoration: none;
 }
 
-header a:hover{
+header a:hover {
     color: #05d405;
     transform: scale(1.05);
 }
 
-header nav ul{
+header nav ul {
     list-style-type: none;
 }
 
-header nav ul li{
+header nav ul li {
     display: inline-block;
     padding: 0 40px;
 }
 
-header .conta button{
+header .conta button {
     padding: 10px 40px;
     font-size: 14px;
     font-weight: 600;
@@ -89,13 +89,13 @@ header .conta button{
     cursor: pointer;
 }
 
-header .conta button:hover{
+header .conta button:hover {
     box-shadow: 0px 0px 8px #05d40583;
 }
 
 .cambio {
-    margin: 0 auto; 
-    width: 35%; 
+    margin: 0 auto;
+    width: 35%;
     background-color: #100e17;
     border-radius: 15px;
     padding-left: 15px;
@@ -123,13 +123,13 @@ header .conta button:hover{
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 400px; 
+    height: 400px;
     border-color: #05d405;
     padding-top: 30px;
 }
 
 
-.container{
+.container {
     display: flex;
     width: 100%;
     height: 100%;
@@ -152,19 +152,20 @@ header .conta button:hover{
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    
+
 }
-.card{
-    left:300px;
-    width:300px;
-    height:400px;
+
+.card {
+    left: 300px;
+    width: 300px;
+    height: 400px;
     border-radius: 20px;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
     justify-content: space-between;
     background-color: var(--secondary);
-    padding:30px;
+    padding: 30px;
     font-size: 10px;
     overflow: hidden;
     position: relative;
@@ -172,30 +173,36 @@ header .conta button:hover{
     margin-left: -150px;
     transition: 0.2s;
 }
-.card:hover{
+
+.card:hover {
     margin-right: 150px;
     transform: translateY(-20px);
 }
-.card .data{
+
+.card .data {
     color: #fff;
     font-weight: bold;
     text-transform: uppercase;
 }
+
 .card .data time {
     color: var(--tertiary);
     padding-left: 10px;
-}   
-.card h2{
+}
+
+.card h2 {
     font-size: 16px;
     line-height: 18px;
     display: block;
-    
+
 }
-.card .autor{
+
+.card .autor {
     display: flex;
     align-items: center;
 }
-.card .autor .img-container{
+
+.card .autor .img-container {
     width: 50px;
     height: 50px;
     border: solid 3px var(--quartenary);
@@ -203,6 +210,7 @@ header .conta button:hover{
     padding: 2px;
     margin-right: 10px;
 }
+
 .card .autor .img-container .img {
     width: 100%;
     height: 100%;
@@ -211,18 +219,19 @@ header .conta button:hover{
     background-size: cover;
 }
 
-.card .autor .info{
+.card .autor .info {
     font-size: 12px;
     font-weight: bold;
 }
+
 .card .autor .info span {
-    display:block;
+    display: block;
     font-size: 10px;
     color: var(--tertiary);
     padding-bottom: 3px;
 }
 
-.card .tags a{
+.card .tags a {
     display: inline-block;
     border: solid 3px var(--quintary);
     border-radius: 30px;
@@ -238,53 +247,69 @@ header .conta button:hover{
     color: var(--quartenary);
     border-color: #05d405;
 }
-html{
+
+html {
     scroll-behavior: smooth;
 }
 
- #escolha {
-        padding: 3px;
-        font-size: 14px; 
-        border: 0px solid #000000;  
-        border-radius: 4px;  
-        background-color: #000000;
-        color: #05d405;
-      
-    }
-.caixanoticias{
+#escolha {
+    padding: 3px;
+    font-size: 14px;
+    border: 0px solid #000000;
+    border-radius: 4px;
+    background-color: #000000;
+    color: #05d405;
+
+}
+
+.caixanoticias {
     margin-top: 200px;
-    background-color:#21222270;
+    background-color: #21222270;
     border-radius: 20px;
     margin: 20px;
 }
-.card .texto{
+
+.card .texto {
     margin: 0;
     padding: 0;
     font-size: 12px;
 }
+
 #btnSalvar {
-    background-color: #000000; /* Cor de fundo verde */
-    border: none; /* Remove a borda */
-    color: #05d405; /* Cor do texto branco */
-    padding: 10px 20px; /* Adiciona espaço interno ao botão */
-    text-align: center; /* Centraliza o texto horizontalmente */
-    text-decoration: none; /* Remove sublinhado do texto */
-    display: inline-block; /* Permite que o botão se ajuste ao conteúdo */
-    font-size: 16px; /* Tamanho da fonte */
-    margin: 4px 2px; /* Margem externa */
-    cursor: pointer; /* Mostra o cursor de ponteiro quando passa sobre o botão */
-    border-radius: 4px; /* Borda arredondada */
+    background-color: #000000;
+    border: none;
+    color: #05d405;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
 }
 
 #btnSalvar:hover {
     color: #05d405;
     transform: scale(1.05)
 }
-#numero{
+
+#numero {
     padding: 3px;
-        font-size: 14px; 
-        border: 0px solid #000000;  
-        border-radius: 4px;  
-        background-color: #000000;
-        color: #05d405;
+    font-size: 14px;
+    border: 0px solid #000000;
+    border-radius: 4px;
+    background-color: #000000;
+    color: #05d405;
+}
+.video{
+    
+    margin-top: 200px;
+    background-color: #21222270;
+    border-radius: 20px;
+    margin: 20px;
+    display: inline-block;
+    padding: 5px;
+    text-align: center;
+    margin-left: 555px;
 }
