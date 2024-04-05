@@ -1,448 +1,459 @@
-<<!DOCTYPE html>
-    <html lang="pt-br">
+<!DOCTYPE html>
+<html lang="pt-br">
 
-    <head>
-        <link rel="stylesheet" href="trackcash.css">
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Trackcash</title>
-    </head>
+<head>
+    <link rel="stylesheet" href="trackcash.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trackcash</title>
+</head>
 
-    <body>
-        <header>
-            <div class="interface">
-                <div class="logo" Id="Home">
-                    <a href="#">
-                        <h1>Trackcash</h1>
-                    </a>
-                </div>
-
-                <nav class="menu-desktop">
-
-                    <ul class="menus">
-                        <li><a href="#">Câmbio</a></li>
-                        <li><a href="#">Gráficos</a></li>
-                        <li><a href="#Noticias">Notícias</a></li>
-                    </ul>
-                </nav>
-                <div class="conta">
-                    <a href="testelogin2.html">
-                        <button>Entrar</button>
-                    </a>
-                </div>
+<body>
+    <header>
+        <div class="interface">
+            <div class="logo" Id="Home">
+                <a href="#">
+                    <h1>Trackcash</h1>
+                </a>
             </div>
-        </header>
 
-        <div class="grafico-cambio">
-            <canvas id="myChart"></canvas>
+            <nav class="menu-desktop">
+
+                <ul class="menus">
+                    <li><a href="#">Câmbio</a></li>
+                    <li><a href="#">Gráficos</a></li>
+                    <li><a href="#Noticias">Notícias</a></li>
+                    <li><a href="#Videos">Videos</a></li>
+                </ul>
+            </nav>
+            <div class="conta">
+                <a href="testelogin2.html">
+                    <button>Entrar</button>
+                </a>
+            </div>
         </div>
+    </header>
 
-        <div class="cambio">
-            <table>
-                <tr>
-                    <th class="title-moeda">Moeda</th>
-                    <th>Taxa de Câmbio</th>
-                </tr>
-                <tr id="exchange-rate-row">
-                    <td>
-                        <label for="escolha">Moeda:</label>
-                        <select id="escolha" name="escolha" onchange="updateExchangeRate()">
-                            <option value="USD">Dólar Americano (USD)</option>
-                            <option value="EUR">Euro (EUR)</option>
-                            <option value="GBP">Libra Esterlina (GBP)</option>
-                            <option value="JPY">Iene japonês (JPY)</option>
-                            <option value="CAD">Dólar Canadense (CAD)</option>
-                        </select>
-                        <input type="number" id="numero" placeholder="Informe o valor:" value="1" oninput="converterMoeda()">
-
-
-                        <button id="btnSalvar" onclick="salvarMoeda()">Salvar</button>
-                    </td>
-
-                    <td id="exchange-rate"></td>
-                </tr>
-            </table>
-        </div>
-    </body>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Parte bolada de salvar moedas
-        function salvarMoeda() {
-            
-            const usuarioAutenticado = localStorage.getItem('usuarioAutenticado');
-            if (!usuarioAutenticado) {
-                
-                window.location.href = 'testelogin2.html';
-                return; 
-            }
-
-            
-            const selectedCurrency = document.getElementById('escolha').value;
-            const moedasSalvas = JSON.parse(localStorage.getItem('moedasSalvas')) || [];
-            if (!moedasSalvas.includes(selectedCurrency)) {
-                moedasSalvas.push(selectedCurrency);
-                localStorage.setItem('moedasSalvas', JSON.stringify(moedasSalvas));
-            }
-            alert(`Moeda ${selectedCurrency} salva!`);
-        }// fim da parte bolada de salvar moedas
-
-        let chartblock = null;
-
-        async function fetchExchangeRate(base) {
-            const apiUrl = `https://economia.awesomeapi.com.br/last/${base}-BRL`;
-            try {
-                const response = await fetch(`${apiUrl}`);
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('Erro ao buscar taxa de câmbio:', error);
-            }
-        }
-
-        async function updateExchangeRate() {
-            const selectedCurrency = document.getElementById('escolha').value;
-            const numero = parseFloat(document.getElementById('numero').value);
-            const rates = await fetchExchangeRate(selectedCurrency);
-            // Ajuste para exibir a taxa de câmbio com duas casas decimais
-            const exchangeRate = (parseFloat(rates[`${selectedCurrency}BRL`].ask) * numero).toFixed(2);
-            document.getElementById('exchange-rate').innerText = `Taxa de câmbio para BRL: ${exchangeRate}`;
-            var query_vars = {
-                apikey: 'fca_live_k7qgm7xjiMokaysiPd3oWbEzdbt8CpcsWwfrvhDH',
-                date: "2024-03-15",
-                currencies: selectedCurrency,
-            }
-
-            const response = await fetch(`https://economia.awesomeapi.com.br/json/daily/${selectedCurrency}-BRL/30`);
-            const data = await response.json();
-            chart(data, selectedCurrency)
-        }
-
-        function chart(data, selectedCurrency) {
-            let labels = [];
-            let dados = [];
-            for (let i = 0; i < data.length; i++) {
-                console.log(data[i])
-                dados.push(data[i].ask)
-                let dt = new Date(parseInt(data[i].timestamp) * 1000);
-                labels.push(`${dt.getMonth()}/${dt.getDate()}`)
-
-            }
-            if (chartblock) {
-                chartblock.destroy();
-                chartblock = null;
-            }
-            chartblock = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: `${selectedCurrency}-BRL`,
-                            data: dados,
-                            borderColor: '#05d405',
-                            tension: 0.2
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Gráfico de Câmbio'
-                        }
-                    }
-                },
-            });
-        }
-
-
-        window.onload = updateExchangeRate;
-        const ctx = document.getElementById('myChart');
-       //conversao do valor
-        async function converterMoeda() {
-            const selectedCurrency = document.getElementById('escolha').value;
-            let numero = document.getElementById('numero').value;
-            
-            if (!numero || isNaN(numero)) {
-                numero = 1; 
-            } else {
-                numero = parseFloat(numero); 
-            }
-            const rates = await fetchExchangeRate(selectedCurrency);
-            const exchangeRate = parseFloat(rates[`${selectedCurrency}BRL`].ask);
-            const resultado = exchangeRate * numero;
-            document.getElementById('exchange-rate').innerText = `Resultado da conversão: ${resultado.toFixed(2)} BRL`;
-        }
-
-    </script>
-
-    <div class="caixanoticias">
-        <div class="container">
-            <!-- Inicio da parte do Card -->
-
-            <div class="card-title" id="Noticias">
-                <h2>Noticias</h2>
-            </div>
-            <div class="card" id="card1">
-                <div class="data"> Blog <time>09 de Mar, 2024</time></div>
-                <h2>Impacto da Guerra
-                    na Economia Global</h2>
-                <div class="texto">O conflito em uma região estratégica gera preocupações sobre o impacto na economia
-                    global. A escalada das tensões geopolíticas tem potencial para afetar o suprimento de recursos,
-                    aumentar os preços das commodities e criar incertezas nos mercados financeiros, exigindo uma
-                    resposta coordenada das autoridades econômicas e diplomáticas.</div>
-
-                <div class="autor">
-                    <div class="img-container">
-                        <div class="img"></div>
-                    </div>
-                    <div class="info">
-                        <span>Autor</span>
-                        Ricardo Costa
-                    </div>
-                </div>
-                <div class="tags">
-                    <a href="#" id="botaoMercado1">Mercado</a>
-                    <a href="#" id="botaoNegocios1">Negocios</a>
-                    <a href="#" id="botaoDolar1">Dolar</a>
-                    <a href="#" id="linkFinancas1" target="_blank">Finanças</a>
-                </div>
-            </div>
-
-
-            <script>
-                document.getElementById('botaoMercado1').addEventListener('click', function () {
-                    window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
-                });
-
-                document.getElementById('botaoNegocios1').addEventListener('click', function () {
-                    window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
-                });
-
-                document.getElementById('botaoDolar1').addEventListener('click', function () {
-                    window.location.href = "https://g1.globo.com/economia/dolar/";
-                });
-
-                document.getElementById('linkFinancas1').href = "https://valor.globo.com/financas/";
-            </script>
-            <div class="card" id="card2">
-                <div class="data"> Blog <time>09 de Mar, 2024</time></div>
-                <h2>Tensões Comerciais Persistem entre EUA e China</h2>
-                <div class="texto">As tensões comerciais entre Estados Unidos e China continuam, apesar das mudanças na
-                    administração americana. Questões relacionadas ao comércio, propriedade intelectual e segurança
-                    nacional permanecem sem solução, alimentando incertezas nos mercados e no cenário econômico global.
-                </div>
-
-                <div class="autor">
-                    <div class="img-container">
-                        <div class="img"></div>
-                    </div>
-                    <div class="info">
-                        <span>Autor</span>
-                        Tiago Oliveira
-                    </div>
-                </div>
-                <div class="tags">
-                    <a href="#" id="botaoMercado2">Mercado</a>
-                    <a href="#" id="botaoNegocios2">Negocios</a>
-                    <a href="#" id="botaoDolar2">Dolar</a>
-                    <a href="#" id="linkFinancas2" target="_blank">Finanças</a>
-                </div>
-            </div>
-
-
-            <script>
-                document.getElementById('botaoMercado2').addEventListener('click', function () {
-                    window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
-                });
-
-                document.getElementById('botaoNegocios2').addEventListener('click', function () {
-                    window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
-                });
-
-                document.getElementById('botaoDolar2').addEventListener('click', function () {
-                    window.location.href = "https://g1.globo.com/economia/dolar/";
-                });
-
-                document.getElementById('linkFinancas2').href = "https://valor.globo.com/financas/";
-            </script>
-
-            <div class="card" id="card3">
-                <div class="data"> Blog <time>09 de Mar, 2024</time></div>
-                <h2> Criptomoedas Atraem Atenção dos Investidores</h2>
-                <div class="texto">O interesse em criptomoedas permanece em alta, com investidores buscando alternativas
-                    ao sistema financeiro tradicional. Bitcoin e outras moedas digitais registram volatilidade, mas
-                    continuam atraindo investimentos e atenção de instituições financeiras e reguladores governamentais
-                </div>
-
-                <div class="autor">
-                    <div class="img-container">
-                        <div class="img"></div>
-                    </div>
-                    <div class="info">
-                        <span>Autor</span>
-                        João Santos
-                    </div>
-                </div>
-                <div class="tags">
-                    <a href="#" id="botaoMercado3">Mercado</a>
-                    <a href="#" id="botaoNegocios3">Negocios</a>
-                    <a href="#" id="botaoDolar3">Dolar</a>
-                    <a href="#" id="linkFinancas3" target="_blank">Finanças</a>
-                </div>
-            </div>
-
-
-            <script>
-                document.getElementById('botaoMercado3').addEventListener('click', function () {
-                    window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
-                });
-
-                document.getElementById('botaoNegocios3').addEventListener('click', function () {
-                    window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
-                });
-
-                document.getElementById('botaoDolar3').addEventListener('click', function () {
-                    window.location.href = "https://g1.globo.com/economia/dolar/";
-                });
-
-                document.getElementById('linkFinancas3').href = "https://valor.globo.com/financas/";
-            </script>
-
-            <div class="card" id="card4">
-                <div class="data"> Blog <time>09 de Mar, 2024</time></div>
-                <h2>Inflação Persiste em Diversas Economias</h2>
-                <div class="texto">A preocupação com a inflação persiste em várias economias, à medida que os preços de
-                    energia, alimentos e outras commodities continuam a subir. Bancos centrais monitoram de perto essa
-                    tendência, considerando possíveis medidas para conter pressões inflacionárias e manter a
-                    estabilidade econômica.</div>
-
-                <div class="autor">
-                    <div class="img-container">
-                        <div class="img"></div>
-                    </div>
-                    <div class="info">
-                        <span>Autor</span>
-                        Pedro Rodrigues
-                    </div>
-                </div>
-                <div class="tags">
-                    <a href="#" id="botaoMercado4">Mercado</a>
-                    <a href="#" id="botaoNegocios4">Negocios</a>
-                    <a href="#" id="botaoDolar4">Dolar</a>
-                    <a href="#" id="linkFinancas4" target="_blank">Finanças</a>
-                </div>
-            </div>
-
-
-            <script>
-                document.getElementById('botaoMercado4').addEventListener('click', function () {
-                    window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
-                });
-
-                document.getElementById('botaoNegocios4').addEventListener('click', function () {
-                    window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
-                });
-
-                document.getElementById('botaoDolar4').addEventListener('click', function () {
-                    window.location.href = "https://g1.globo.com/economia/dolar/";
-                });
-
-                document.getElementById('linkFinancas4').href = "https://valor.globo.com/financas/";
-            </script>
-
-            <div class="card" id="card5">
-                <div class="data"> Blog <time>09 de Mar, 2024</time></div>
-                <h2>China Surpreende</h2>
-                <div class="texto">A segunda maior economia do mundo, China, registra um crescimento econômico mais
-                    forte do que o esperado no primeiro trimestre de 2024. Impulsionada pela demanda doméstica e
-                    exportações resilientes, a China continua a desempenhar um papel crucial na recuperação econômica
-                    global.</div>
-                <div class="autor">
-                    <div class="img-container">
-                        <div class="img"></div>
-                    </div>
-                    <div class="info">
-                        <span>Autor</span>
-                        Miguel Ferreira
-                    </div>
-                </div>
-                <div class="tags">
-                    <a href="#" id="botaoMercado5">Mercado</a>
-                    <a href="#" id="botaoNegocios5">Negocios</a>
-                    <a href="#" id="botaoDolar5">Dolar</a>
-                    <a href="#" id="linkFinancas5" target="_blank">Finanças</a>
-                </div>
-            </div>
-
-
-            <script>
-                document.getElementById('botaoMercado5').addEventListener('click', function () {
-                    window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
-                });
-
-                document.getElementById('botaoNegocios5').addEventListener('click', function () {
-                    window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
-                });
-
-                document.getElementById('botaoDolar5').addEventListener('click', function () {
-                    window.location.href = "https://g1.globo.com/economia/dolar/";
-                });
-
-                document.getElementById('linkFinancas5').href = "https://valor.globo.com/financas/";
-            </script>
-
-            <div class="card" id="card6">
-                <div class="data"> Blog <time>09 de Mar, 2024</time></div>
-                <h2>Dolar sobe em disparada</h2>
-                <div class="texto">Investidores ao redor do mundo foram pegos de surpresa hoje com a rápida e acentuada
-                    valorização do dólar americano. Em uma escalada sem precedentes, a moeda norte-americana subiu em
-                    disparada frente a uma variedade de outras moedas internacionais, deixando os mercados cambiais em
-                    alerta.</div>
-                <div class="autor">
-                    <div class="img-container">
-                        <div class="img"></div>
-                    </div>
-                    <div class="info">
-                        <span>Autor</span>
-                        Luís Oliveira
-                    </div>
-
-                    <div class="texto">
-
-                    </div>
-
-                </div>
-                <div class="tags">
-                    <a href="#" id="botaoMercado6">Mercado</a>
-                    <a href="#" id="botaoNegocios6">Negocios</a>
-                    <a href="#" id="botaoDolar6">Dolar</a>
-                    <a href="#" id="linkFinancas6" target="_blank">Finanças</a>
-                </div>
-            </div>
-
-
-            <script>
-                document.getElementById('botaoMercado6').addEventListener('click', function () {
-                    window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
-                });
-
-                document.getElementById('botaoNegocios6').addEventListener('click', function () {
-                    window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
-                });
-
-                document.getElementById('botaoDolar6').addEventListener('click', function () {
-                    window.location.href = "https://g1.globo.com/economia/dolar/";
-                });
-
-                document.getElementById('linkFinancas6').href = "https://valor.globo.com/financas/";
-            </script>
-            <!-- Fim da parte dos cards -->
-        </div>
+    <div class="grafico-cambio">
+        <canvas id="myChart"></canvas>
     </div>
 
-    </html>
+    <div class="cambio">
+        <table>
+            <tr>
+                <th class="title-moeda">Moeda</th>
+                <th>Taxa de Câmbio</th>
+            </tr>
+            <tr id="exchange-rate-row">
+                <td>
+                    <label for="escolha">Moeda:</label>
+                    <select id="escolha" name="escolha" onchange="updateExchangeRate()">
+                        <option value="USD">Dólar Americano (USD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                        <option value="GBP">Libra Esterlina (GBP)</option>
+                        <option value="JPY">Iene japonês (JPY)</option>
+                        <option value="CAD">Dólar Canadense (CAD)</option>
+                    </select>
+                    <input type="number" id="numero" placeholder="Informe o valor:" value="1"
+                        oninput="converterMoeda()">
+
+
+                    <button id="btnSalvar" onclick="salvarMoeda()">Salvar</button>
+                </td>
+
+                <td id="exchange-rate"></td>
+            </tr>
+        </table>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Parte bolada de salvar moedas
+    function salvarMoeda() {
+
+        const usuarioAutenticado = localStorage.getItem('usuarioAutenticado');
+        if (!usuarioAutenticado) {
+
+            window.location.href = 'testelogin2.html';
+            return;
+        }
+
+
+        const selectedCurrency = document.getElementById('escolha').value;
+        const moedasSalvas = JSON.parse(localStorage.getItem('moedasSalvas')) || [];
+        if (!moedasSalvas.includes(selectedCurrency)) {
+            moedasSalvas.push(selectedCurrency);
+            localStorage.setItem('moedasSalvas', JSON.stringify(moedasSalvas));
+        }
+        alert(`Moeda ${selectedCurrency} salva!`);
+    }// fim da parte bolada de salvar moedas
+
+    let chartblock = null;
+
+    async function fetchExchangeRate(base) {
+        const apiUrl = `https://economia.awesomeapi.com.br/last/${base}-BRL`;
+        try {
+            const response = await fetch(`${apiUrl}`);
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Erro ao buscar taxa de câmbio:', error);
+        }
+    }
+
+    async function updateExchangeRate() {
+        const selectedCurrency = document.getElementById('escolha').value;
+        const numero = parseFloat(document.getElementById('numero').value);
+        const rates = await fetchExchangeRate(selectedCurrency);
+        // Ajuste para exibir a taxa de câmbio com duas casas decimais
+        const exchangeRate = (parseFloat(rates[`${selectedCurrency}BRL`].ask) * numero).toFixed(2);
+        document.getElementById('exchange-rate').innerText = `Taxa de câmbio para BRL: ${exchangeRate}`;
+        var query_vars = {
+            apikey: 'fca_live_k7qgm7xjiMokaysiPd3oWbEzdbt8CpcsWwfrvhDH',
+            date: "2024-03-15",
+            currencies: selectedCurrency,
+        }
+
+        const response = await fetch(`https://economia.awesomeapi.com.br/json/daily/${selectedCurrency}-BRL/30`);
+        const data = await response.json();
+        chart(data, selectedCurrency)
+    }
+
+    function chart(data, selectedCurrency) {
+        let labels = [];
+        let dados = [];
+        for (let i = 0; i < data.length; i++) {
+            console.log(data[i])
+            dados.push(data[i].ask)
+            let dt = new Date(parseInt(data[i].timestamp) * 1000);
+            labels.push(`${dt.getMonth()}/${dt.getDate()}`)
+
+        }
+        if (chartblock) {
+            chartblock.destroy();
+            chartblock = null;
+        }
+        chartblock = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: `${selectedCurrency}-BRL`,
+                        data: dados,
+                        borderColor: '#05d405',
+                        tension: 0.2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Gráfico de Câmbio'
+                    }
+                }
+            },
+        });
+    }
+
+
+    window.onload = updateExchangeRate;
+    const ctx = document.getElementById('myChart');
+    //conversao do valor
+    async function converterMoeda() {
+        const selectedCurrency = document.getElementById('escolha').value;
+        let numero = document.getElementById('numero').value;
+
+        if (!numero || isNaN(numero)) {
+            numero = 1;
+        } else {
+            numero = parseFloat(numero);
+        }
+        const rates = await fetchExchangeRate(selectedCurrency);
+        const exchangeRate = parseFloat(rates[`${selectedCurrency}BRL`].ask);
+        const resultado = exchangeRate * numero;
+        document.getElementById('exchange-rate').innerText = `Resultado da conversão: ${resultado.toFixed(2)} BRL`;
+    }
+
+</script>
+
+<div class="caixanoticias">
+    <div class="container">
+        <!-- Inicio da parte do Card -->
+
+        <div class="card-title" id="Noticias">
+            <h2>Noticias</h2>
+        </div>
+        <div class="card" id="card1">
+            <div class="data"> Blog <time>09 de Mar, 2024</time></div>
+            <h2>Impacto da Guerra
+                na Economia Global</h2>
+            <div class="texto">O conflito em uma região estratégica gera preocupações sobre o impacto na economia
+                global. A escalada das tensões geopolíticas tem potencial para afetar o suprimento de recursos,
+                aumentar os preços das commodities e criar incertezas nos mercados financeiros, exigindo uma
+                resposta coordenada das autoridades econômicas e diplomáticas.</div>
+
+            <div class="autor">
+                <div class="img-container">
+                    <div class="img"></div>
+                </div>
+                <div class="info">
+                    <span>Autor</span>
+                    Ricardo Costa
+                </div>
+            </div>
+            <div class="tags">
+                <a href="#" id="botaoMercado1">Mercado</a>
+                <a href="#" id="botaoNegocios1">Negocios</a>
+                <a href="#" id="botaoDolar1">Dolar</a>
+                <a href="#" id="linkFinancas1" target="_blank">Finanças</a>
+            </div>
+        </div>
+
+
+        <script>
+            document.getElementById('botaoMercado1').addEventListener('click', function () {
+                window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
+            });
+
+            document.getElementById('botaoNegocios1').addEventListener('click', function () {
+                window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
+            });
+
+            document.getElementById('botaoDolar1').addEventListener('click', function () {
+                window.location.href = "https://g1.globo.com/economia/dolar/";
+            });
+
+            document.getElementById('linkFinancas1').href = "https://valor.globo.com/financas/";
+        </script>
+        <div class="card" id="card2">
+            <div class="data"> Blog <time>09 de Mar, 2024</time></div>
+            <h2>Tensões Comerciais Persistem entre EUA e China</h2>
+            <div class="texto">As tensões comerciais entre Estados Unidos e China continuam, apesar das mudanças na
+                administração americana. Questões relacionadas ao comércio, propriedade intelectual e segurança
+                nacional permanecem sem solução, alimentando incertezas nos mercados e no cenário econômico global.
+            </div>
+
+            <div class="autor">
+                <div class="img-container">
+                    <div class="img"></div>
+                </div>
+                <div class="info">
+                    <span>Autor</span>
+                    Tiago Oliveira
+                </div>
+            </div>
+            <div class="tags">
+                <a href="#" id="botaoMercado2">Mercado</a>
+                <a href="#" id="botaoNegocios2">Negocios</a>
+                <a href="#" id="botaoDolar2">Dolar</a>
+                <a href="#" id="linkFinancas2" target="_blank">Finanças</a>
+            </div>
+        </div>
+
+
+        <script>
+            document.getElementById('botaoMercado2').addEventListener('click', function () {
+                window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
+            });
+
+            document.getElementById('botaoNegocios2').addEventListener('click', function () {
+                window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
+            });
+
+            document.getElementById('botaoDolar2').addEventListener('click', function () {
+                window.location.href = "https://g1.globo.com/economia/dolar/";
+            });
+
+            document.getElementById('linkFinancas2').href = "https://valor.globo.com/financas/";
+        </script>
+
+        <div class="card" id="card3">
+            <div class="data"> Blog <time>09 de Mar, 2024</time></div>
+            <h2> Criptomoedas Atraem Atenção dos Investidores</h2>
+            <div class="texto">O interesse em criptomoedas permanece em alta, com investidores buscando alternativas
+                ao sistema financeiro tradicional. Bitcoin e outras moedas digitais registram volatilidade, mas
+                continuam atraindo investimentos e atenção de instituições financeiras e reguladores governamentais
+            </div>
+
+            <div class="autor">
+                <div class="img-container">
+                    <div class="img"></div>
+                </div>
+                <div class="info">
+                    <span>Autor</span>
+                    João Santos
+                </div>
+            </div>
+            <div class="tags">
+                <a href="#" id="botaoMercado3">Mercado</a>
+                <a href="#" id="botaoNegocios3">Negocios</a>
+                <a href="#" id="botaoDolar3">Dolar</a>
+                <a href="#" id="linkFinancas3" target="_blank">Finanças</a>
+            </div>
+        </div>
+
+
+        <script>
+            document.getElementById('botaoMercado3').addEventListener('click', function () {
+                window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
+            });
+
+            document.getElementById('botaoNegocios3').addEventListener('click', function () {
+                window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
+            });
+
+            document.getElementById('botaoDolar3').addEventListener('click', function () {
+                window.location.href = "https://g1.globo.com/economia/dolar/";
+            });
+
+            document.getElementById('linkFinancas3').href = "https://valor.globo.com/financas/";
+        </script>
+
+        <div class="card" id="card4">
+            <div class="data"> Blog <time>09 de Mar, 2024</time></div>
+            <h2>Inflação Persiste em Diversas Economias</h2>
+            <div class="texto">A preocupação com a inflação persiste em várias economias, à medida que os preços de
+                energia, alimentos e outras commodities continuam a subir. Bancos centrais monitoram de perto essa
+                tendência, considerando possíveis medidas para conter pressões inflacionárias e manter a
+                estabilidade econômica.</div>
+
+            <div class="autor">
+                <div class="img-container">
+                    <div class="img"></div>
+                </div>
+                <div class="info">
+                    <span>Autor</span>
+                    Pedro Rodrigues
+                </div>
+            </div>
+            <div class="tags">
+                <a href="#" id="botaoMercado4">Mercado</a>
+                <a href="#" id="botaoNegocios4">Negocios</a>
+                <a href="#" id="botaoDolar4">Dolar</a>
+                <a href="#" id="linkFinancas4" target="_blank">Finanças</a>
+            </div>
+        </div>
+
+
+        <script>
+            document.getElementById('botaoMercado4').addEventListener('click', function () {
+                window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
+            });
+
+            document.getElementById('botaoNegocios4').addEventListener('click', function () {
+                window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
+            });
+
+            document.getElementById('botaoDolar4').addEventListener('click', function () {
+                window.location.href = "https://g1.globo.com/economia/dolar/";
+            });
+
+            document.getElementById('linkFinancas4').href = "https://valor.globo.com/financas/";
+        </script>
+
+        <div class="card" id="card5">
+            <div class="data"> Blog <time>09 de Mar, 2024</time></div>
+            <h2>China Surpreende</h2>
+            <div class="texto">A segunda maior economia do mundo, China, registra um crescimento econômico mais
+                forte do que o esperado no primeiro trimestre de 2024. Impulsionada pela demanda doméstica e
+                exportações resilientes, a China continua a desempenhar um papel crucial na recuperação econômica
+                global.</div>
+            <div class="autor">
+                <div class="img-container">
+                    <div class="img"></div>
+                </div>
+                <div class="info">
+                    <span>Autor</span>
+                    Miguel Ferreira
+                </div>
+            </div>
+            <div class="tags">
+                <a href="#" id="botaoMercado5">Mercado</a>
+                <a href="#" id="botaoNegocios5">Negocios</a>
+                <a href="#" id="botaoDolar5">Dolar</a>
+                <a href="#" id="linkFinancas5" target="_blank">Finanças</a>
+            </div>
+        </div>
+
+
+        <script>
+            document.getElementById('botaoMercado5').addEventListener('click', function () {
+                window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
+            });
+
+            document.getElementById('botaoNegocios5').addEventListener('click', function () {
+                window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
+            });
+
+            document.getElementById('botaoDolar5').addEventListener('click', function () {
+                window.location.href = "https://g1.globo.com/economia/dolar/";
+            });
+
+            document.getElementById('linkFinancas5').href = "https://valor.globo.com/financas/";
+        </script>
+
+        <div class="card" id="card6">
+            <div class="data"> Blog <time>09 de Mar, 2024</time></div>
+            <h2>Dolar sobe em disparada</h2>
+            <div class="texto">Investidores ao redor do mundo foram pegos de surpresa hoje com a rápida e acentuada
+                valorização do dólar americano. Em uma escalada sem precedentes, a moeda norte-americana subiu em
+                disparada frente a uma variedade de outras moedas internacionais, deixando os mercados cambiais em
+                alerta.</div>
+            <div class="autor">
+                <div class="img-container">
+                    <div class="img"></div>
+                </div>
+                <div class="info">
+                    <span>Autor</span>
+                    Luís Oliveira
+                </div>
+
+                <div class="texto">
+
+                </div>
+
+            </div>
+            <div class="tags">
+                <a href="#" id="botaoMercado6">Mercado</a>
+                <a href="#" id="botaoNegocios6">Negocios</a>
+                <a href="#" id="botaoDolar6">Dolar</a>
+                <a href="#" id="linkFinancas6" target="_blank">Finanças</a>
+            </div>
+        </div>
+
+
+        <script>
+            document.getElementById('botaoMercado6').addEventListener('click', function () {
+                window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/mercado/";
+            });
+
+            document.getElementById('botaoNegocios6').addEventListener('click', function () {
+                window.location.href = "https://www.cnnbrasil.com.br/tudo-sobre/negocios/";
+            });
+
+            document.getElementById('botaoDolar6').addEventListener('click', function () {
+                window.location.href = "https://g1.globo.com/economia/dolar/";
+            });
+
+            document.getElementById('linkFinancas6').href = "https://valor.globo.com/financas/";
+        </script>
+        <!-- Fim da parte dos cards -->
+    </div>
+</div>
+<div class="video" id="Videos">
+    <h2>Videos</h2>
+    <video controls width="600">
+        <source src="COMO ORGANIZAR SUAS FINANÇAS E GUARDAR DINHEIRO.mp4" type="video/mp4">
+        Seu navegador não suporta o elemento de vídeo.
+    </video>
+    <li>More</li>
+    
+</div>
+
+</html>
